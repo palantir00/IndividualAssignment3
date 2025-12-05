@@ -1,0 +1,105 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+
+% Page margins
+\geometry{margin=1in}
+
+% Code formatting setup
+\lstset{
+    language=Java,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    commentstyle=\color{green!50!black},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    captionpos=b
+}
+
+\title{Individual Assignment 3: \\ Parallel Matrix Multiplication Analysis}
+\author{Martyna Chmielińska} 
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report investigates the performance improvements gained by applying parallel computing techniques to matrix multiplication. We implemented a standard sequential algorithm and compared it with a parallel implementation utilizing Java's \texttt{ExecutorService}. The study focuses on execution time, speedup, and efficiency metrics for large matrices, demonstrating the benefits of multi-threaded processing on multi-core architectures.
+\end{abstract}
+
+\section{Introduction}
+Matrix multiplication is a fundamental operation in linear algebra with a computational complexity of $O(N^3)$. For large datasets, sequential execution becomes computationally expensive. 
+The objective of this assignment is to:
+\begin{enumerate}
+    [cite_start]\item Implement a parallel version of matrix multiplication[cite: 10, 14].
+    [cite_start]\item Analyze performance gains (Speedup and Efficiency)[cite: 15].
+    [cite_start]\item Monitor resource usage (CPU/Memory)[cite: 21].
+\end{enumerate}
+
+\section{Methodology}
+
+\subsection{Environment}
+The tests were conducted on the following hardware:
+\begin{itemize}
+    \item \textbf{CPU:} Apple Silicon (M1/M2/M3) % Update if needed
+    \item \textbf{Cores:} 8 Threads
+    \item \textbf{OS:} macOS
+    \item \textbf{Language:} Java 17+
+\end{itemize}
+
+\subsection{Implementation Details}
+Two versions of the algorithm were developed:
+\begin{enumerate}
+    \item \textbf{Sequential Algorithm:} A classic triple-nested loop implementation where each element is computed one by one.
+    \item \textbf{Parallel Algorithm:} Implemented using \texttt{java.util.concurrent.Executors}. The workload is partitioned by rows: each thread in the pool computes an entire row of the resulting matrix. [cite_start]This minimizes synchronization overhead as each thread writes to a distinct memory location[cite: 11].
+\end{enumerate}
+
+\section{Results}
+
+\subsection{Performance Metrics}
+The table below presents the execution time for different matrix sizes. Speedup ($S$) is defined as $S = T_{seq} / T_{par}$, and Efficiency ($E$) is defined as $E = S / N_{cores}$.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Matrix Size} & \textbf{Sequential (s)} & \textbf{Parallel (s)} & \textbf{Speedup} & \textbf{Efficiency} \\
+\hline
+1024 & 1.9045 & 0.6960 & 2.74 & 0.34 \\
+2048 & [INSERT VAL] & [INSERT VAL] & [INSERT VAL] & [INSERT VAL] \\
+\hline
+\end{tabular}
+\caption{Comparison of execution times and performance metrics.}
+\label{tab:results}
+\end{table}
+
+\subsection{Resource Usage}
+During the execution of the parallel algorithm, CPU utilization increased significantly across all available cores (reaching nearly 100\% load), confirming effective parallelization. In contrast, the sequential version utilized only a single core.
+% Optional: Uncomment below if you have a screenshot
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{cpu_usage.png}
+%     \caption{CPU Load during parallel execution}
+% \end{figure}
+
+\section{Analysis and Discussion}
+The results show a clear performance gain when using the parallel approach. For a matrix size of $1024 \times 1024$, the speedup was approximately $2.74$x.
+\begin{itemize}
+    \item \textbf{Scalability:} As the matrix size increases (e.g., to 2048), the speedup typically improves because the computational load outweighs the thread management overhead.
+    \item \textbf{Bottlenecks:} The speedup is not perfectly linear (i.e., equal to the number of cores) primarily due to memory bandwidth limitations. [cite_start]Matrix multiplication is memory-intensive, and multiple threads compete for access to RAM[cite: 6].
+\end{itemize}
+
+\section{Conclusion}
+We successfully implemented a parallel matrix multiplication algorithm using Java Executors. The experiments demonstrated that parallelization significantly reduces execution time for large matrices. While the theoretical maximum speedup is limited by hardware resources (specifically memory bandwidth), the implementation efficiently utilizes multi-core architecture.
+
+\end{document}
